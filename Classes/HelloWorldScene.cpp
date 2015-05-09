@@ -12,6 +12,12 @@ Scene* HelloWorld::createScene()
 
     // add layer as a child to scene
     scene->addChild(layer);
+    
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    // cocos2d-x に用意されているカラーセットの赤を使って、赤色の背景色と範囲を指定します
+    auto bg = LayerColor::create(Color4B::RED, visibleSize.width, visibleSize.height);
+    // シーンを追加します。
+    scene->addChild(bg);
 
     // return the scene
     return scene;
@@ -71,6 +77,35 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
+    
+    
+    // イベントリスナー作成
+    auto listener = EventListenerTouchOneByOne::create(); // シングルタッチ
+    // イベントを飲み込むかどうか
+    listener->setSwallowTouches(true);
+    // タッチ開始
+    listener->onTouchBegan = [](Touch* touch, Event* event){
+        Point touchPoint = Vec2(touch->getLocationInView().x, touch->getLocationInView().y);
+        CCLOG("x=%f, y=%f", touchPoint.x, touchPoint.y);
+        // タッチ開始時の処理を書く
+        return true;
+    };
+    // タッチ中
+    listener->onTouchMoved = [](Touch* touch, Event* event){
+        
+        // タッチ中の処理を書く
+    };
+    // タッチ終了
+    listener->onTouchEnded = [](Touch* touch, Event* event){
+        // タッチ終了時の処理を書く
+    };
+    // タッチキャンセル
+    listener->onTouchCancelled = [](Touch* touch, Event* event){
+        // タッチキャンセル時の処理を書く
+    };
+    // イベントリスナーを登録
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,
+                                                                       this);
     
     return true;
 }
